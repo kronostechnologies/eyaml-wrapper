@@ -14,7 +14,7 @@ fi
 
 if [ -z "$1" ];
 then
-  echo ">> must pass file or string as argument"
+  echo ">> Must pass file or string as argument" >&2
   exit 1
 fi
 
