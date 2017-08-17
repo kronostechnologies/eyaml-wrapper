@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Mac compatibility
+realpath() {
+    [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+}
+
+CURRENT_SCRIPT_DIRECTORY=$(dirname ${BASH_SOURCE[0]})
+PUBLIC_KEY_FOLDER=$(realpath ${PWD}/keys)
+VALUE=$1
+
+if [ ! -d $PUBLIC_KEY_FOLDER ]; then
+  echo ">> The folder '$PUBLIC_KEY_FOLDER' does not exists."
+  exit 1;
+fi
+
+if [ -f $VALUE ]; then
+  echo ">> Encrypting file '$1'"
+  VALUE=$(cat $1)
+fi
+echo -n "$VALUE" | docker run -v $PUBLIC_KEY_FOLDER:/keys/ -i --rm --name eyaml halberom/hiera-eyaml encrypt --stdin | grep "string"
