@@ -20,7 +20,7 @@ fi
 
 if [ -f "$1" ]; then
   echo ">> Encrypting file '$1'" >&2
-  VALUE="$(cat $1)"
+  VALUE=$(cat "$1")
 else
   VALUE="$1"
 fi
