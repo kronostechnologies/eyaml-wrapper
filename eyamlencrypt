@@ -10,12 +10,12 @@ PUBLIC_KEY_FOLDER=$(realpath ${PWD}/keys)
 VALUE=$1
 
 if [ ! -d $PUBLIC_KEY_FOLDER ]; then
-  echo ">> The folder '$PUBLIC_KEY_FOLDER' does not exists."
+  echo ">> The folder '$PUBLIC_KEY_FOLDER' does not exists." >&2
   exit 1;
 fi
 
 if [ -f $VALUE ]; then
-  echo ">> Encrypting file '$1'"
+  echo ">> Encrypting file '$1'" >&2
   VALUE=$(cat $1)
 fi
 echo -n "$VALUE" | docker run -v $PUBLIC_KEY_FOLDER:/keys/ -i --rm --name eyaml halberom/hiera-eyaml encrypt --stdin | grep "string"
