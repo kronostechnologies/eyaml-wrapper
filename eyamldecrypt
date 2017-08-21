@@ -94,7 +94,8 @@ fi
 
 
 # decrypt eyml files
-echo "Decrypting all .eyml file at '$configDir'"
+echo "Decrypting all .eyml file in '$configDir' (recursive)"
+shopt -s globstar
 for eymlFile in $configDir/**/*.eyml
 do
   ymlFile="${eymlFile%.eyml}.yml"
