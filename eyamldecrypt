@@ -11,7 +11,7 @@ usage () {
   cat 1>&2 <<EOF
 eyamldecrypt -k|--key <private_key_file> -p|--pub <pkcs_public_key_file> -d|--directory <dir-with-eyml-files>
 
-# environment variables (has priority over params)
+# Environment variables has priority over options
   EYAMLDECRYPT_PRIVATE_KEY      PKCS7 private key            export EYAMLDECRYPT_PRIVATE_KEY=\$(cat ./keys/private_key.pkcs7.pem)
   EYAMLDECRYPT_PUBLIC_KEY       PKCS7 public key             export EYAMLDECRYPT_PUBLIC_KEY=\$(cat ./keys/public_key.pkcs7.pem)
   EYAMLDECRYPT_CONF_DIR         Directory of eyml files      export EYAMLDECRYPT_CONF_DIR=./application/configs/
@@ -52,7 +52,7 @@ command -v eyaml >/dev/null 2>&1 || { echo 1>&2 "Command 'eyaml' does not exist 
 # load env
 if [ ! -z "${EYAMLDECRYPT_PRIVATE_KEY}" ]
 then
-  echo "Setting private key from environment"
+  echo "Environment variable 'EYAMLDECRYPT_PRIVATE_KEY' is set and will be used."
   privateKeyTmpFile=$(mktemp)
   echo -n "${EYAMLDECRYPT_PRIVATE_KEY}" > $privateKeyTmpFile
   privateKeyFile=$privateKeyTmpFile
@@ -60,7 +60,7 @@ fi
 
 if [ ! -z "${EYAMLDECRYPT_PUBLIC_KEY}" ]
 then
-  echo "Setting public key from environment"
+  echo "Environment variable 'EYAMLDECRYPT_PUBLIC_KEY' is set and will be used."
   publicKeyTmpFile=$(mktemp)
   echo -n "${EYAMLDECRYPT_PUBLIC_KEY}" > $publicKeyTmpFile
   publicKeyFile=$publicKeyTmpFile
@@ -68,7 +68,7 @@ fi
 
 if [ ! -z "${EYAMLDECRYPT_CONF_DIR}" ]
 then
-  echo "Setting directory from environment"
+  echo "Environment variable 'EYAMLDECRYPT_CONF_DIR' is set and will be used."
   configDir="${EYAMLDECRYPT_CONF_DIR}"
 fi
 
@@ -76,24 +76,25 @@ fi
 # validate inputs
 if [ -z $privateKeyFile ] || [ ! -f $privateKeyFile ]
 then
-  echo "Invalid private key file"
+  echo "Invalid private key file."
   usage
 fi
 
 if [ -z $publicKeyFile ] || [ ! -f $publicKeyFile ]
 then
-  echo "Invalid public key file"
+  echo "Invalid public key file."
   usage
 fi
 
 if [ -z $configDir ] || [ ! -d $configDir ]
 then
-  echo "Invalid configuration directory"
+  echo "Invalid configuration directory."
   usage
 fi
 
 
 # decrypt eyml files
+echo "Decrypting all .eyml file at '$configDir'"
 for eymlFile in $configDir/**/*.eyml
 do
   ymlFile="${eymlFile%.eyml}.yml"
