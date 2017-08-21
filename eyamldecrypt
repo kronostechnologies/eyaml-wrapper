@@ -12,9 +12,9 @@ usage () {
 eyamldecrypt -k|--key <private_key_file> -p|--pub <pkcs_public_key_file> -d|--directory <dir-with-eyml-files>
 
 # environment variables (has priority over params)
-  PRIVATE_KEY      PKCS7 private key            export PRIVATE_KEY=\$(cat ./keys/private_key.pkcs7.pem)
-  PUBLIC_KEY       PKCS7 public key             export PUBLIC_KEY=\$(cat ./keys/public_key.pkcs7.pem)
-  CONF_DIR         Directory of eyml files      export CONF_DIR=./application/configs/
+  EYAMLDECRYPT_PRIVATE_KEY      PKCS7 private key            export EYAMLDECRYPT_PRIVATE_KEY=\$(cat ./keys/private_key.pkcs7.pem)
+  EYAMLDECRYPT_PUBLIC_KEY       PKCS7 public key             export EYAMLDECRYPT_PUBLIC_KEY=\$(cat ./keys/public_key.pkcs7.pem)
+  EYAMLDECRYPT_CONF_DIR         Directory of eyml files      export EYAMLDECRYPT_CONF_DIR=./application/configs/
 
 EOF
   exit 1
@@ -48,26 +48,26 @@ done
 
 
 # load env
-if [ ! -z "${PRIVATE_KEY}" ]
+if [ ! -z "${EYAMLDECRYPT_PRIVATE_KEY}" ]
 then
   echo "Setting private key from environment"
   privateKeyTmpFile=$(mktemp)
-  echo "${PRIVATE_KEY}" > $privateKeyTmpFile
+  echo "${EYAMLDECRYPT_PRIVATE_KEY}" > $privateKeyTmpFile
   privateKeyFile=$privateKeyTmpFile
 fi
 
-if [ ! -z "${PUBLIC_KEY}" ]
+if [ ! -z "${EYAMLDECRYPT_PUBLIC_KEY}" ]
 then
   echo "Setting public key from env"
   publicKeyTmpFile=$(mktemp)
-  echo "${PUBLIC_KEY}" > $publicKeyTmpFile
+  echo "${EYAMLDECRYPT_PUBLIC_KEY}" > $publicKeyTmpFile
   publicKeyFile=$publicKeyTmpFile
 fi
 
-if [ ! -z "${CONF_DIR}" ]
+if [ ! -z "${EYAMLDECRYPT_CONF_DIR}" ]
 then
   echo "Setting directory from env"
-  configDir="${CONF_DIR}"
+  configDir="${EYAMLDECRYPT_CONF_DIR}"
 fi
 
 
