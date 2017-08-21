@@ -46,6 +46,8 @@ do
   shift
 done
 
+# make sure eyaml exists
+command -v eyaml >/dev/null 2>&1 || { echo "Command 'eyaml' does not exist and is required to run this script.  Aborting."; exit 1; }
 
 # load env
 if [ ! -z "${EYAMLDECRYPT_PRIVATE_KEY}" ]
@@ -88,14 +90,6 @@ if [ -z $configDir ] || [ ! -d $configDir ]
 then
   echo "Invalid configuration directory"
   usage
-fi
-
-
-# install dependencies
-if [ -z `which eyaml` ]
-then
-  echo "Installing dependency hiera-eyaml"
-  sudo apt-get -qq -y install hiera-eyaml > /dev/null
 fi
 
 
