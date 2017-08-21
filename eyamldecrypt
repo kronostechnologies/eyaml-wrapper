@@ -60,7 +60,7 @@ fi
 
 if [ ! -z "${EYAMLDECRYPT_PUBLIC_KEY}" ]
 then
-  echo "Setting public key from env"
+  echo "Setting public key from environment"
   publicKeyTmpFile=$(mktemp)
   echo -n "${EYAMLDECRYPT_PUBLIC_KEY}" > $publicKeyTmpFile
   publicKeyFile=$publicKeyTmpFile
@@ -68,7 +68,7 @@ fi
 
 if [ ! -z "${EYAMLDECRYPT_CONF_DIR}" ]
 then
-  echo "Setting directory from env"
+  echo "Setting directory from environment"
   configDir="${EYAMLDECRYPT_CONF_DIR}"
 fi
 
