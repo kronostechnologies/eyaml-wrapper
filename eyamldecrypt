@@ -52,7 +52,7 @@ command -v eyaml >/dev/null 2>&1 || { echo 1>&2 "Command 'eyaml' does not exist 
 # load env
 if [ ! -z "${EYAMLDECRYPT_PRIVATE_KEY}" ]
 then
-  echo 1>&2 "Setting private key from environment"
+  echo "Setting private key from environment"
   privateKeyTmpFile=$(mktemp)
   echo -n "${EYAMLDECRYPT_PRIVATE_KEY}" > $privateKeyTmpFile
   privateKeyFile=$privateKeyTmpFile
@@ -60,7 +60,7 @@ fi
 
 if [ ! -z "${EYAMLDECRYPT_PUBLIC_KEY}" ]
 then
-  echo 1>&2 "Setting public key from env"
+  echo "Setting public key from env"
   publicKeyTmpFile=$(mktemp)
   echo -n "${EYAMLDECRYPT_PUBLIC_KEY}" > $publicKeyTmpFile
   publicKeyFile=$publicKeyTmpFile
@@ -68,7 +68,7 @@ fi
 
 if [ ! -z "${EYAMLDECRYPT_CONF_DIR}" ]
 then
-  echo 1>&2 "Setting directory from env"
+  echo "Setting directory from env"
   configDir="${EYAMLDECRYPT_CONF_DIR}"
 fi
 
@@ -76,19 +76,19 @@ fi
 # validate inputs
 if [ -z $privateKeyFile ] || [ ! -f $privateKeyFile ]
 then
-  echo 1>&2 "Invalid private key file"
+  echo "Invalid private key file"
   usage
 fi
 
 if [ -z $publicKeyFile ] || [ ! -f $publicKeyFile ]
 then
-  echo 1>&2 "Invalid public key file"
+  echo "Invalid public key file"
   usage
 fi
 
 if [ -z $configDir ] || [ ! -d $configDir ]
 then
-  echo 1>&2 "Invalid configuration directory"
+  echo "Invalid configuration directory"
   usage
 fi
 
