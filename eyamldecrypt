@@ -76,20 +76,20 @@ fi
 # validate inputs
 if [ -z $privateKeyFile ] || [ ! -f $privateKeyFile ]
 then
-  echo "Invalid private key file."
-  usage
+  echo "eyamldecrypt: invalid parameter: private key file '$privateKeyFile'"
+  exit 1
 fi
 
 if [ -z $publicKeyFile ] || [ ! -f $publicKeyFile ]
 then
-  echo "Invalid public key file."
-  usage
+  echo "eyamldecrypt: invalid parameter: public key file '$publicKeyFile'"
+  exit 1
 fi
 
 if [ -z $configDir ] || [ ! -d $configDir ]
 then
-  echo "Invalid configuration directory."
-  usage
+  echo "eyamldecrypt: invalid parameter: configuration directory '$configDir'"
+  exit 1
 fi
 
 
