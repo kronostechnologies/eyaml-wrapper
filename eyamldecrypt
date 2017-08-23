@@ -77,19 +77,19 @@ fi
 if [ -z $privateKeyFile ] || [ ! -f $privateKeyFile ]
 then
   echo "Invalid private key file."
-  usage
+  exit 1
 fi
 
 if [ -z $publicKeyFile ] || [ ! -f $publicKeyFile ]
 then
   echo "Invalid public key file."
-  usage
+  exit 1
 fi
 
 if [ -z $configDir ] || [ ! -d $configDir ]
 then
   echo "Invalid configuration directory."
-  usage
+  exit 1
 fi
 
 
