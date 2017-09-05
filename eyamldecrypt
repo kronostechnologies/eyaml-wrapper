@@ -1,15 +1,13 @@
 #!/bin/bash
-# set -e -u
 
 # GIVEN private/public PKCS7 keys and a folder containing .eyml files
 # WHEN called from the command line with valid key and configuration folder
 # THEN deposit unencrypted .yml files next to .eyml files
 
-
 # parse args
 usage () {
   cat 1>&2 <<EOF
-eyamldecrypt -k|--key <private_key_file> -p|--pub <pkcs_public_key_file> -d|--directory <dir-with-eyml-files>
+eyamldecrypt -k|--key <private_key_file> -p|--pub <pkcs_public_key_file> -d|--directory <dir-with-eyml-files> -q|--quiet -qq|--silent
 
 # Environment variables has priority over options
   EYAMLDECRYPT_PRIVATE_KEY      PKCS7 private key            export EYAMLDECRYPT_PRIVATE_KEY=\$(cat ./keys/private_key.pkcs7.pem)
@@ -26,19 +24,26 @@ do
 
   case $key in
       -k|--key)
-      privateKeyFile="$2"
-      shift
+        privateKeyFile="$2"
+        shift
       ;;
       -p|--pub)
-      publicKeyFile="$2"
-      shift
+        publicKeyFile="$2"
+        shift
       ;;
       -d|--directory)
-      configDir="$2"
-      shift
+        configDir="$2"
+        shift
+      ;;
+      -q|--quiet)
+        quiet=true
+      ;;
+      -qq|--silent)
+        quiet=true
+        silent=true
       ;;
       -h|--help)
-      usage
+        usage
       ;;
       *)
       ;;
@@ -46,13 +51,21 @@ do
   shift
 done
 
+function error {
+  [ "${silent}" != 'true' ] && printf 'eyamldecrypt: %s\n' "$@"
+}
+
+function notice  {
+  [ "${quiet}" != 'true' ] && printf 'eyamldecrypt: %s\n' "$@"
+}
+
 # make sure eyaml exists
 command -v eyaml >/dev/null 2>&1 || { echo 1>&2 "Command 'eyaml' does not exist and is required to run this script.  Aborting."; exit 1; }
 
 # load env
 if [ ! -z "${EYAMLDECRYPT_PRIVATE_KEY}" ]
 then
-  echo "Environment variable 'EYAMLDECRYPT_PRIVATE_KEY' is set and will be used."
+  notice "Environment variable 'EYAMLDECRYPT_PRIVATE_KEY' is set and will be used."
   privateKeyTmpFile=$(mktemp)
   echo -n "${EYAMLDECRYPT_PRIVATE_KEY}" > $privateKeyTmpFile
   privateKeyFile=$privateKeyTmpFile
@@ -60,7 +73,7 @@ fi
 
 if [ ! -z "${EYAMLDECRYPT_PUBLIC_KEY}" ]
 then
-  echo "Environment variable 'EYAMLDECRYPT_PUBLIC_KEY' is set and will be used."
+  notice "Environment variable 'EYAMLDECRYPT_PUBLIC_KEY' is set and will be used."
   publicKeyTmpFile=$(mktemp)
   echo -n "${EYAMLDECRYPT_PUBLIC_KEY}" > $publicKeyTmpFile
   publicKeyFile=$publicKeyTmpFile
@@ -68,7 +81,7 @@ fi
 
 if [ ! -z "${EYAMLDECRYPT_CONF_DIR}" ]
 then
-  echo "Environment variable 'EYAMLDECRYPT_CONF_DIR' is set and will be used."
+  notice "Environment variable 'EYAMLDECRYPT_CONF_DIR' is set and will be used."
   configDir="${EYAMLDECRYPT_CONF_DIR}"
 fi
 
@@ -76,25 +89,25 @@ fi
 # validate inputs
 if [ -z $privateKeyFile ] || [ ! -f $privateKeyFile ]
 then
-  echo "eyamldecrypt: invalid parameter: private key file '$privateKeyFile'"
+  error "invalid parameter: private key file '$privateKeyFile'"
   exit 1
 fi
 
 if [ -z $publicKeyFile ] || [ ! -f $publicKeyFile ]
 then
-  echo "eyamldecrypt: invalid parameter: public key file '$publicKeyFile'"
+  error "invalid parameter: public key file '$publicKeyFile'"
   exit 1
 fi
 
 if [ -z $configDir ] || [ ! -d $configDir ]
 then
-  echo "eyamldecrypt: invalid parameter: configuration directory '$configDir'"
+  error "invalid parameter: configuration directory '$configDir'"
   exit 1
 fi
 
 
 # decrypt eyml files
-echo "Decrypting all .eyml file in '$configDir' (recursive)"
+notice "Decrypting all .eyml file in '$configDir' (recursive)"
 shopt -s globstar
 for eymlFile in $configDir/**/*.eyml
 do
