@@ -51,7 +51,7 @@ do
   shift
 done
 
-function error {
+function warning {
   [ "${silent}" != 'true' ] && printf 'eyamldecrypt: %s\n' "$@"
 }
 
@@ -87,37 +87,38 @@ fi
 
 
 # validate inputs
-if [ -z $privateKeyFile ] || [ ! -f $privateKeyFile ]
+if [ -z "${privateKeyFile}" ] || [ ! -f "${privateKeyFile}" ]
 then
-  error "invalid parameter: private key file '$privateKeyFile'"
-  exit 1
+  warning "invalid parameter: private key file '$privateKeyFile'"
 fi
 
-if [ -z $publicKeyFile ] || [ ! -f $publicKeyFile ]
+if [ -z "${publicKeyFile}" ] || [ ! -f "${publicKeyFile}" ]
 then
-  error "invalid parameter: public key file '$publicKeyFile'"
-  exit 1
+  warning "invalid parameter: public key file '$publicKeyFile'"
 fi
 
-if [ -z $configDir ] || [ ! -d $configDir ]
+if [ -z "${configDir}" ] || [ ! -d "${configDir}" ]
 then
-  error "invalid parameter: configuration directory '$configDir'"
-  exit 1
+  warning "invalid parameter: configuration directory '$configDir'"
 fi
 
 
 # decrypt eyml files
-notice "Decrypting all .eyml file in '$configDir' (recursive)"
-shopt -s globstar
-for eymlFile in $configDir/**/*.eyml
-do
-  ymlFile="${eymlFile%.eyml}.yml"
-  eyaml decrypt \
-    --pkcs7-private-key=$privateKeyFile \
-    --pkcs7-public-key=$publicKeyFile \
-    --file $eymlFile > $ymlFile
-done
-
+if [ -f "${privateKeyFile}" ] && [ -f "${publicKeyFile}" ] && [ -d "${configDir}" ]
+then
+  notice "Decrypting all .eyml file in '$configDir' (recursive)"
+  shopt -s globstar
+  for eymlFile in $configDir/**/*.eyml
+  do
+    ymlFile="${eymlFile%.eyml}.yml"
+    eyaml decrypt \
+      --pkcs7-private-key=$privateKeyFile \
+      --pkcs7-public-key=$publicKeyFile \
+      --file $eymlFile > $ymlFile
+  done
+else
+  notice "no eyml files decrypted"
+fi
 
 # cleanup tmp files
 [ -f "${privateKeyTmpFile}" ] && rm $privateKeyTmpFile
