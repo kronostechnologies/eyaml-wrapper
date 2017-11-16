@@ -60,14 +60,14 @@ function notice {
 }
 
 # make sure eyaml exists
-command -v eyaml >/dev/null 2>&1 || { echo 1>&2 "Command 'eyaml' does not exist and is required to run this script.  Aborting."; exit 1; }
+command -v eyaml >/dev/null 2>&1 || { echo 1>&2 "Command 'eyaml' does not exist and is required to run this script. Aborting."; exit 1; }
 
 # check locale and use UTF-8 if possible
 if [[ ! $LANG =~ (UTF-8|utf8|UTF8|utf-8) ]]; then
   UTF8_LOCALE=$(locale -a | grep -i UTF | tail -n1)
   if [[ -z $UTF8_LOCALE ]]; then
-    notice "There are no UTF-8 locale on this system. Using default locale '${LANG}'."
-    notice "Files containning utf-8 character won't be decrypted and will fail with '!!! invalid byte sequence in US-ASCII' error."
+    notice "there are no UTF-8 locale on this system. Using default locale '${LANG}'"
+    notice "files containning utf-8 character won't be decrypted and will fail with '!!! invalid byte sequence in US-ASCII' error"
   else
     export LANG=$UTF8_LOCALE
   fi
@@ -76,7 +76,7 @@ fi
 # load env
 if [ ! -z "${EYAMLDECRYPT_PRIVATE_KEY}" ]
 then
-  notice "Environment variable 'EYAMLDECRYPT_PRIVATE_KEY' is set and will be used."
+  notice "environment variable 'EYAMLDECRYPT_PRIVATE_KEY' is set and will be used"
   privateKeyTmpFile=$(mktemp)
   echo -n "${EYAMLDECRYPT_PRIVATE_KEY}" > $privateKeyTmpFile
   privateKeyFile=$privateKeyTmpFile
@@ -84,7 +84,7 @@ fi
 
 if [ ! -z "${EYAMLDECRYPT_PUBLIC_KEY}" ]
 then
-  notice "Environment variable 'EYAMLDECRYPT_PUBLIC_KEY' is set and will be used."
+  notice "environment variable 'EYAMLDECRYPT_PUBLIC_KEY' is set and will be used"
   publicKeyTmpFile=$(mktemp)
   echo -n "${EYAMLDECRYPT_PUBLIC_KEY}" > $publicKeyTmpFile
   publicKeyFile=$publicKeyTmpFile
@@ -92,7 +92,7 @@ fi
 
 if [ ! -z "${EYAMLDECRYPT_CONF_DIR}" ]
 then
-  notice "Environment variable 'EYAMLDECRYPT_CONF_DIR' is set and will be used."
+  notice "environment variable 'EYAMLDECRYPT_CONF_DIR' is set and will be used"
   configDir="${EYAMLDECRYPT_CONF_DIR}"
 fi
 
@@ -117,11 +117,11 @@ fi
 # decrypt eyml files
 if [ -f "${privateKeyFile}" ] && [ -f "${publicKeyFile}" ] && [ -d "${configDir}" ]
 then
-  notice "Decrypting all .eyml file in '$configDir' (recursive)"
+  notice "decrypting all .eyml file in '$configDir' (recursive)"
   shopt -s globstar
   for eymlFile in $configDir/**/*.eyml
   do
-    notice "Decrypting '${eymlFile}'"
+    notice "decrypting '${eymlFile}'"
     ymlFile="${eymlFile%.eyml}.yml"
     eyaml decrypt \
       --pkcs7-private-key=$privateKeyFile \
