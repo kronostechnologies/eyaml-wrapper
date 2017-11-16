@@ -55,12 +55,23 @@ function warning {
   [ "${silent}" != 'true' ] && printf 'eyamldecrypt: %s\n' "$@"
 }
 
-function notice  {
+function notice {
   [ "${quiet}" != 'true' ] && printf 'eyamldecrypt: %s\n' "$@"
 }
 
 # make sure eyaml exists
 command -v eyaml >/dev/null 2>&1 || { echo 1>&2 "Command 'eyaml' does not exist and is required to run this script.  Aborting."; exit 1; }
+
+# check locale and use UTF-8 if possible
+if [[ ! $LANG =~ (UTF-8|utf8|UTF8|utf-8) ]]; then
+  UTF8_LOCALE=$(locale -a | grep -i UTF | tail -n1)
+  if [[ -z $UTF8_LOCALE ]]; then
+    notice "There are no UTF-8 locale on this system. Using default locale '${LANG}'."
+    notice "Files containning utf-8 character won't be decrypted and will fail with '!!! invalid byte sequence in US-ASCII' error."
+  else
+    export LANG=$UTF8_LOCALE
+  fi
+fi
 
 # load env
 if [ ! -z "${EYAMLDECRYPT_PRIVATE_KEY}" ]
@@ -110,6 +121,7 @@ then
   shopt -s globstar
   for eymlFile in $configDir/**/*.eyml
   do
+    notice "Decrypting '${eymlFile}'"
     ymlFile="${eymlFile%.eyml}.yml"
     eyaml decrypt \
       --pkcs7-private-key=$privateKeyFile \
