@@ -1,7 +1,14 @@
 eyamlwrapper
 -----------
 
+##### generate key files
+This will generate a `keys` directory containing a private and public key in your current directory
+```
+docker run -v $(pwd):/code -w /code -u $UID:$UID --rm -it halberom/hiera-eyaml createkeys
+```
+
 ##### eyamldecrypt
+Recursively decrypt all `.enc` files from the given directory. This script does not depend on docker.
 
 ```
 eyamldecrypt -k|--key <private_key_file> -p|--pub <pkcs_public_key_file> -d|--directory <dir-with-eyml-files> -q|--quiet -qq|--silent
@@ -10,8 +17,6 @@ eyamldecrypt -k|--key <private_key_file> -p|--pub <pkcs_public_key_file> -d|--di
   EYAMLDECRYPT_PUBLIC_KEY       PKCS7 public key             export EYAMLDECRYPT_PUBLIC_KEY=\$(cat ./keys/public_key.pkcs7.pem)
   EYAMLDECRYPT_CONF_DIR         Directory of eyml files      export EYAMLDECRYPT_CONF_DIR=./application/configs/
 ```
-
-> This script does NOT depend on docker.
 
 ##### eyamlencrypt
 
@@ -28,4 +33,4 @@ $ eyamlencrypt /myfile
 string: ENC[PKCS7,MIIBeQYJKoZIhvcNAQcDoIIBajCCAWYCAQAxggEhMIIBHQIBADAFMAACAQEwDQYJKoZIhvcNAQEBBQAEggEAkswuInY4FyrDbVezK684v0CGe/dOT+cJbcJAHcbi+EcRfCbVKJYXJbtf80/mkBNnG3SpYFgcWfNZEmGRlBJAxtFeUDm0Ax7sS7J/l0YrWh/NF4WOxOBmJR+/EgCmwIiuYjHseCr50N6iwrgWXDIxpXbFQ8Y6NuFSe/EYPjwLpYTHDlKdwwNPajFroVSDeknZyqctM4MZKT99Vnlv0ztbt4/2zi0K2Kx7V8IQLA3rPPWlpN+pHGEzUlPymTenYMyCRzYJSLpOdU4eGFkA2bYOHADImILYZNv+tBQgFXKInHYSbh/FXFuzdEh3tTjDcgG0dAmZraKGh2LnwzOZ/tQy2zA8BgkqhkiG9w0BBwEwHQYJYIZIAWUDBAEqBBADsDSLpzvI13vOBRLr6VvhgBASOZRhXgJBcPLWMg5gO8AO]
 ```
 
-> This script DOES depend on docker. See [halberom/docker_hiera-eyaml](https://hub.docker.com/r/halberom/hiera-eyaml/) for more details.
+> This script _depends_ on docker. See [halberom/docker_hiera-eyaml](https://hub.docker.com/r/halberom/hiera-eyaml/) for more details.
