@@ -10,9 +10,9 @@ usage () {
 eyamldecrypt -k|--key <private_key_file> -p|--pub <pkcs_public_key_file> -d|--directory <dir-with-eyml-files> -q|--quiet -qq|--silent
 
 # Environment variables has priority over options
-  EYAMLDECRYPT_PRIVATE_KEY      PKCS7 private key            export EYAMLDECRYPT_PRIVATE_KEY=\$(cat ./keys/private_key.pkcs7.pem)
-  EYAMLDECRYPT_PUBLIC_KEY       PKCS7 public key             export EYAMLDECRYPT_PUBLIC_KEY=\$(cat ./keys/public_key.pkcs7.pem)
-  EYAMLDECRYPT_CONF_DIR         Directory of eyml files      export EYAMLDECRYPT_CONF_DIR=./application/configs/
+  EYAMLDECRYPT_PRIVATE_KEY      PKCS7 private key (string or file)  export EYAMLDECRYPT_PRIVATE_KEY=./keys/private_key.pkcs7.pem
+  EYAMLDECRYPT_PUBLIC_KEY       PKCS7 public key (string or file)   export EYAMLDECRYPT_PUBLIC_KEY=./keys/public_key.pkcs7.pem
+  EYAMLDECRYPT_CONF_DIR         Directory of eyml files             export EYAMLDECRYPT_CONF_DIR=./application/configs/
 
 EOF
   exit 1
@@ -77,17 +77,24 @@ fi
 if [ ! -z "${EYAMLDECRYPT_PRIVATE_KEY}" ]
 then
   notice "environment variable 'EYAMLDECRYPT_PRIVATE_KEY' is set and will be used"
-  privateKeyTmpFile=$(mktemp)
-  echo -n "${EYAMLDECRYPT_PRIVATE_KEY}" > $privateKeyTmpFile
-  privateKeyFile=$privateKeyTmpFile
+  if [ -r "${EYAMLDECRYPT_PRIVATE_KEY}" ]; then
+    privateKeyFile="${EYAMLDECRYPT_PRIVATE_KEY}"
+  else
+    privateKeyFile=$(mktemp)
+    echo -n "${EYAMLDECRYPT_PRIVATE_KEY}" > $privateKeyFile
+  fi
 fi
 
 if [ ! -z "${EYAMLDECRYPT_PUBLIC_KEY}" ]
 then
   notice "environment variable 'EYAMLDECRYPT_PUBLIC_KEY' is set and will be used"
-  publicKeyTmpFile=$(mktemp)
-  echo -n "${EYAMLDECRYPT_PUBLIC_KEY}" > $publicKeyTmpFile
-  publicKeyFile=$publicKeyTmpFile
+  if [ -r "${EYAMLDECRYPT_PUBLIC_KEY}" ]; then
+    publicKeyFile="${EYAMLDECRYPT_PUBLIC_KEY}"
+  else
+    publicKeyFile=$(mktemp)
+    echo -n "${EYAMLDECRYPT_PUBLIC_KEY}" > $publicKeyFile
+  fi
+
 fi
 
 if [ ! -z "${EYAMLDECRYPT_CONF_DIR}" ]
@@ -98,12 +105,12 @@ fi
 
 
 # validate inputs
-if [ -z "${privateKeyFile}" ] || [ ! -f "${privateKeyFile}" ]
+if [ -z "${privateKeyFile}" ] || [ ! -r "${privateKeyFile}" ]
 then
   warning "invalid parameter: private key file '$privateKeyFile'"
 fi
 
-if [ -z "${publicKeyFile}" ] || [ ! -f "${publicKeyFile}" ]
+if [ -z "${publicKeyFile}" ] || [ ! -r "${publicKeyFile}" ]
 then
   warning "invalid parameter: public key file '$publicKeyFile'"
 fi
