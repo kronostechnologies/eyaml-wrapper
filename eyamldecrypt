@@ -125,7 +125,7 @@ fi
 if [ -f "${privateKeyFile}" ] && [ -f "${publicKeyFile}" ] && [ -d "${configDir}" ]
 then
   notice "decrypting all .eyml file in '$configDir' (recursive)"
-  shopt -s nullglob
+  shopt -s globstar nullglob
   eymlFiles=$configDir/**/*.eyml
   if [[ -n $(echo ${eymlFiles}) ]]; then
     for eymlFile in $eymlFiles
@@ -140,7 +140,7 @@ then
   else
     notice "no eyml files decrypted: there were no '.eyml' file in folder '${configDir}'"
   fi
-  shopt -u nullglob
+  shopt -u globstar nullglob
 else
   notice "no eyml files decrypted"
 fi
