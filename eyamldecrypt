@@ -125,7 +125,7 @@ fi
 if [ -f "${privateKeyFile}" ] && [ -f "${publicKeyFile}" ] && [ -d "${configDir}" ]
 then
   notice "decrypting all .eyml file in '$configDir' (recursive)"
-  shopt -s globstar
+  shopt -s nullglob
   for eymlFile in $configDir/**/*.eyml
   do
     notice "decrypting '${eymlFile}'"
