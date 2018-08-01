@@ -148,3 +148,5 @@ fi
 # cleanup tmp files
 [ -f "${privateKeyTmpFile}" ] && rm $privateKeyTmpFile
 [ -f "${publicKeyTmpFile}" ] && rm $publicKeyTmpFile
+
+exit 0
