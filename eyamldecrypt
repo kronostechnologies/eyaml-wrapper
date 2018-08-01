@@ -140,6 +140,7 @@ then
   else
     notice "no eyml files decrypted: there were no '.eyml' file in folder '${configDir}'"
   fi
+  shopt -u nullglob
 else
   notice "no eyml files decrypted"
 fi
