@@ -126,15 +126,20 @@ if [ -f "${privateKeyFile}" ] && [ -f "${publicKeyFile}" ] && [ -d "${configDir}
 then
   notice "decrypting all .eyml file in '$configDir' (recursive)"
   shopt -s nullglob
-  for eymlFile in $configDir/**/*.eyml
-  do
-    notice "decrypting '${eymlFile}'"
-    ymlFile="${eymlFile%.eyml}.yml"
-    eyaml decrypt \
-      --pkcs7-private-key=$privateKeyFile \
-      --pkcs7-public-key=$publicKeyFile \
-      --file $eymlFile > $ymlFile
-  done
+  eymlFiles=$configDir/**/*.eyml
+  if [[ -n $(echo ${eymlFiles}) ]]; then
+    for eymlFile in $eymlFiles
+    do
+      notice "decrypting '${eymlFile}'"
+      ymlFile="${eymlFile%.eyml}.yml"
+      eyaml decrypt \
+        --pkcs7-private-key=$privateKeyFile \
+        --pkcs7-public-key=$publicKeyFile \
+        --file $eymlFile > $ymlFile
+    done
+  else
+    notice "no eyml files decrypted: there were no '.eyml' file in folder '${configDir}'"
+  fi
 else
   notice "no eyml files decrypted"
 fi
